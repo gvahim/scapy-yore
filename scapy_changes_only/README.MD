@@ -11,6 +11,6 @@ should locate in the scapy library under layers/yore/*.py and add the file \__in
 The file yore_fields.py should locate under scapy folder next to the scapy's fields.py
 
 ## TODO
-- [ ] get @github/pelegdvir review 
+- [ ] get @pelegdvir review 
 - [ ] make python script to download and locate the files in the correct places.
 - [ ] clean the TODO from the files.
