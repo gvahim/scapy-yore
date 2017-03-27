@@ -1,7 +1,7 @@
 import struct
 
 from l2 import get_mac_by_yoip
-from fields import YOIPField
+from yore_fields import YOIPField
 from scapy.config import conf
 from scapy.layers.inet import Ether, Raw
 from scapy.packet import Packet, bind_layers

@@ -1,6 +1,6 @@
 import struct
 
-from fields import YOIPField
+from yore_fields import YOIPField
 from scapy.config import conf
 from scapy.packet import Packet
 from scapy.sendrecv import srp1
