@@ -9,21 +9,7 @@ from scapy.fields import (XShortField, XByteField, ShortField,
                           ByteEnumField, ByteField, FlagsField)
 
 
-# YORE
-class YO(Packet):
-    name = "YO"
-    fields_desc = [
-        XShortField("magic", 0x594F),
-        XByteField("version", 1),
-        ShortField("len", None),
-        ByteField("hop", 0x10),
-        ByteEnumField("opcode", 1, {0: "ping", 1: "pong", 2: "RE", 255: "raw"}),
-        XByteField("chksum", None),
-        XByteField("reserved", 0),
-        YOIPField("dst", "0.0"),
-        YOIPField("src", "1.1")
-    ]
-
+class YOREPacket(Packet):
     # As ripped off from https://gist.github.com/eaydin/768a200c5d68b9bc66e7
     # check Licensing.
     def calc_check_sum(self, data):
@@ -51,6 +37,21 @@ class YO(Packet):
             if odd:
                 crc ^= 0x8C  # this means crc ^= 140
         return crc
+
+
+class YO(YOREPacket):
+    name = "YO"
+    fields_desc = [
+        XShortField("magic", 0x594F),
+        XByteField("version", 1),
+        ShortField("len", None),
+        ByteField("hop", 0x10),
+        ByteEnumField("opcode", 1, {0: "ping", 1: "pong", 2: "RE", 255: "raw"}),
+        XByteField("chksum", None),
+        XByteField("reserved", 0),
+        YOIPField("dst", "0.0"),
+        YOIPField("src", "1.1")
+    ]
 
     def post_build(self, p, pay):
         if self.len is None:
@@ -92,8 +93,7 @@ class YO(Packet):
                 return self.payload.payload.answers(other)
 
 
-# YORE
-class RE(Packet):
+class RE(YOREPacket):
     name = "RE"
     fields_desc = [
         XShortField("magic", 0x5245),
@@ -105,34 +105,6 @@ class RE(Packet):
         ByteField("ack", 0x0),
         XByteField("chksum", None)
     ]
-
-    # As ripped off from https://gist.github.com/eaydin/768a200c5d68b9bc66e7
-    # check Licensing.
-    def calc_check_sum(self, data):
-        msg_byte = self.hex_str_to_byte(data)
-        check = 0
-        for i in msg_byte:
-            check = self.add_to_crc(i, check)
-        return check
-
-    @staticmethod
-    def hex_str_to_byte(msg):
-        hex_data = msg.decode("hex")
-        msg = bytearray(hex_data)
-        return msg
-
-    @staticmethod
-    def add_to_crc(b, crc):
-        b2 = b
-        if b < 0:
-            b2 = b + 256
-        for i in xrange(8):
-            odd = ((b2 ^ crc) & 1) == 1
-            crc >>= 1
-            b2 >>= 1
-            if odd:
-                crc ^= 0x8C  # this means crc ^= 140
-        return crc
 
     def post_build(self, p, pay):
         if self.len is None:
@@ -155,15 +127,10 @@ class RE(Packet):
 # # TODO FIX
 #    def extract_padding(self, s):        
 #        return s[11:]
-# YORE 
 
 
-# YORE
 bind_layers(Ether, YO, type=0x9998)
 bind_layers(YO, RE, opcode=2)
 bind_layers(YO, Raw, opcode=0xFF)
-# YORE
 
-# YORE
 conf.neighbor.register_l3(Ether, YO, lambda l2, l3: get_mac_by_yoip(l3.dst))
-# YORE

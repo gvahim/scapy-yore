@@ -11,25 +11,21 @@ from scapy.fields import XShortField, ByteField, ShortEnumField
 from scapy.layers.l2 import (SourceMACField, DestMACField, XShortEnumField,
                              Dot3, ARPSourceMACField, MACField)
 
-# YORE
 conf.netcache.new_cache("yoarp_cache", 120)  # cache entries expire after 120s
 
 
-# YORE
 @conf.commands.register
 def register_yoip(yoip):
     conf.yoip = yoip
 
-
 register_yoip("0.0")
 
 
-# YORE
 @conf.commands.register
 def get_mac_by_yoip(yoip, chain_cc=0):
     """Return MAC address corresponding to a given YOIP address"""
 
-    # YORE TODO: is 0.0.0.0 a good enough default? I think so.
+    # TODO: is 0.0.0.0 a good enough default? I think so.
     iff, a, gw = conf.route.route("0.0.0.0")
 
     src_mac = get_if_hwaddr(iff)
@@ -101,7 +97,6 @@ class Ether(Packet):
                 return Dot3
         return cls
 
-    # YORE 
     def guess_payload_class(self, payload):
         if self.type == 2054 and len(payload) > 4:
             if payload[2:4] == "\x99\x99":
@@ -111,7 +106,6 @@ class Ether(Packet):
         return Packet.guess_payload_class(self, payload)
 
 
-# YORE
 class YOARP(Packet):
     name = "YOARP"
     fields_desc = [
@@ -149,6 +143,4 @@ class YOARP(Packet):
             return ARP
         return cls
 
-
-# YORE
 conf.neighbor.register_l3(Ether, YOARP, lambda l2, l3: get_mac_by_yoip(l3.pdst))

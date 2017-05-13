@@ -3,7 +3,6 @@ from scapy.config import conf
 from scapy.fields import Field
 
 
-# YORE
 class YOIPField(Field):
     def __init__(self, name, default):
         super(self.__class__, self).__init__(name, default, '2s')
@@ -47,5 +46,3 @@ class YOIPField(Field):
 
     def randval(self):
         return 4000
-
-# YORE
