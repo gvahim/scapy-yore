@@ -20,21 +20,24 @@ def download():
         urllib.urlretrieve(url, save_path)
     return directory_
 
+
+def main(should_download):
+    directory = 'yore'
+    if should_download:
+        directory = download()
+    path = [p for p in site.getsitepackages() if 'site-packages' in p][0]
+    installation_path = os.path.join(path, 'scapy', 'layers', 'yore')
+    shutil.copytree(directory, installation_path)
+    config_path = os.path.join(path, 'scapy', 'config.py')
+    with open(config_path, 'a') as config:
+        config.write("conf.load_layers.append('yore')")
+        config.write(os.linesep)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--download', action='store_true', help='download the files from github')
 
     args = parser.parse_args()
 
-    directory = 'yore'
-    if args.download:
-        directory = download()
-
-    path = [p for p in site.getsitepackages() if 'site-packages' in p][0]
-    installation_path = os.path.join(path, 'scapy', 'layers', 'yore')
-    shutil.copytree(directory, installation_path)
-
-    config_path = os.path.join(path, 'scapy', 'config.py')
-    with open(config_path, 'a') as config:
-        config.write("conf.load_layers.append('yore')")
-        config.write(os.linesep)
+    main(args.download)
