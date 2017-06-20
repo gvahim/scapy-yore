@@ -7,6 +7,19 @@ import argparse
 FILES = map(lambda a: '{}.py'.format(a), ['__init__', 'inet', 'l2', 'yore_fields'])
 DOWNLOAD_URL = 'https://raw.githubusercontent.com/gvahim/scapy-yore/master/scapy_changes_only/yore/{}'
 
+
+def download():
+    directory_ = 'temp'
+    if not os.path.exists(directory_):
+        os.mkdir(directory_)
+
+    for file_ in FILES:
+        url = DOWNLOAD_URL.format(file_)
+        print 'Downloading {} from {}...'.format(file_, url)
+        save_path = os.path.join(directory_, file_)
+        urllib.urlretrieve(url, save_path)
+    return directory_
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--download', action='store_true', help='download the files from github')
@@ -15,15 +28,7 @@ if __name__ == '__main__':
 
     directory = 'yore'
     if args.download:
-        directory = 'temp'
-        if not os.path.exists(directory):
-            os.mkdir(directory)
-
-        for file_ in FILES:
-            url = DOWNLOAD_URL.format(file_)
-            print 'Downloading {} from {}...'.format(file_, url)
-            save_path = os.path.join(directory, file_)
-            urllib.urlretrieve(url, save_path)
+        directory = download()
 
     path = [p for p in site.getsitepackages() if 'site-packages' in p][0]
     installation_path = os.path.join(path, 'scapy', 'layers', 'yore')
