@@ -1,4 +1,5 @@
 import os
+import ssl
 import site
 import shutil
 import urllib
@@ -17,7 +18,8 @@ def download():
         url = DOWNLOAD_URL.format(file_)
         print 'Downloading {} from {}...'.format(file_, url)
         save_path = os.path.join(directory_, file_)
-        urllib.urlretrieve(url, save_path)
+        context = ssl._create_unverified_context()
+        urllib.urlretrieve(url, save_path, context=context)
     return directory_
 
 
