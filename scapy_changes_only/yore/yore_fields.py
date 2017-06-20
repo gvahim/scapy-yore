@@ -8,7 +8,7 @@ class YOIPField(Field):
         super(self.__class__, self).__init__(name, default, '2s')
 
     def h2i(self, pkt, x):
-        if type(x) is basestring:
+        if isinstance(x, basestring):
             a, b = x.split(".")
             return struct.unpack(">H", struct.pack(">BB", int(a), int(b)))[0]
         elif type(x) is list:
@@ -29,16 +29,12 @@ class YOIPField(Field):
     def any2i(self, pkt, x):
         return self.h2i(pkt, x)
 
-    def i2repr(self, pkt, x):
-        return self.resolve(self.i2h(pkt, x))
-
     def i2h(self, pkt, x):
         a, b = struct.pack(">H", x)
         return "%d.%d" % (ord(a), ord(b))
 
     def i2repr(self, pkt, x):
-        a, b = struct.pack(">H", x)
-        return "%d.%d" % (ord(a), ord(b))
+        return self.i2h(pkt, x)
 
     def m2h(self, pkt, x):
         a, b = x[0], x[1]
