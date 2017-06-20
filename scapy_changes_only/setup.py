@@ -27,6 +27,8 @@ def main(should_download):
         directory = download()
     path = [p for p in site.getsitepackages() if 'site-packages' in p][0]
     installation_path = os.path.join(path, 'scapy', 'layers', 'yore')
+    if os.path.exists(installation_path):
+        shutil.rmtree(installation_path)
     shutil.copytree(directory, installation_path)
     config_path = os.path.join(path, 'scapy', 'config.py')
     with open(config_path, 'a') as config:
