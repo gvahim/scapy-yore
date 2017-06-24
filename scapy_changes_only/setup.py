@@ -25,6 +25,7 @@ def main(should_download):
     directory = 'yore'
     if should_download:
         directory = download()
+
     path = [p for p in site.getsitepackages() if 'site-packages' in p][0]
     installation_path = os.path.join(path, 'scapy', 'layers', 'yore')
     if os.path.exists(installation_path):
@@ -34,6 +35,8 @@ def main(should_download):
     with open(config_path, 'a') as config:
         config.write("conf.load_layers.append('yore')")
         config.write(os.linesep)
+
+    shutil.rmtree(directory)
 
 
 if __name__ == '__main__':
